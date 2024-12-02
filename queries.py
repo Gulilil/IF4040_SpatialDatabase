@@ -6,7 +6,7 @@ CREATE_TABLE_REGION = """CREATE TABLE IF NOT EXISTS region (
   region_code VARCHAR(255) PRIMARY KEY,
   region_name VARCHAR(255) NOT NULL,
   point GEOGRAPHY(Point) NOT NULL,
-  region GEOGRAPHY(MultiPolygon) NOT NULL,
+  shape GEOGRAPHY(MultiPolygon) NOT NULL,
   country_code VARCHAR(255) NOT NULL,
   country_name VARCHAR(255) NOT NULL
 )
@@ -17,9 +17,12 @@ CREATE_TABLE_DISTRICT = """CREATE TABLE IF NOT EXISTS district (
   district_name VARCHAR(255) NOT NULL,
   district_type VARCHAR(100) NOT NULL,
   point GEOGRAPHY(Point) NOT NULL,
-  district GEOGRAPHY(MultiPolygon) NOT NULL,
+  shape GEOGRAPHY NOT NULL,
   region_code VARCHAR(255) NOT NULL,
-  FOREIGN KEY (region_code) REFERENCES region(region_code) ON UPDATE CASCADE ON DELETE CASCADE
+  FOREIGN KEY (region_code) REFERENCES region(region_code) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT check_polygon_multipolygon CHECK (
+      GeometryType(shape) IN ('POLYGON', 'MULTIPOLYGON')
+  )
 )
 """
 
