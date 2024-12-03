@@ -51,6 +51,26 @@ def adjust_geometry_insert_query(data):
   return f"ST_GeomFromGeoJSON({make_string(data)})::geography"
 
 
+def insert_country(df):
+  i = 0
+  max_batch = 1
+  while (i <= len(df)):
+    bound = min(len(df), i + max_batch)
+    partial_df = df[i:bound]
+    query = "INSERT INTO country VALUES \n"
+    for _, row in partial_df.iterrows():
+      row_query = "("
+      row_query += make_string(row['country_code']) + ", "
+      row_query += make_string(row['country_name'].replace("\'", "")) + ", "
+      row_query += adjust_point_insert_query(row['point']) + ", "
+      row_query += adjust_geometry_insert_query(row['shape'])
+      row_query += "),\n"
+      query += row_query 
+    query = query[:-2] +";"
+    execute_query(query)
+    print(f"[INSERTED] Insert {i} data")
+    i += max_batch
+    time.sleep(0.1)
 
 def insert_region(df):
   i = 0
@@ -65,8 +85,7 @@ def insert_region(df):
       row_query += make_string(row['region_name'].replace("\'", "")) + ", "
       row_query += adjust_point_insert_query(row['point']) + ", "
       row_query += adjust_geometry_insert_query(row['shape']) + ", "
-      row_query += make_string(row['country_code']) + ", "
-      row_query += make_string(row['country_name'].replace("\'", ""))
+      row_query += make_string(row['country_code'])
       row_query += "),\n"
       query += row_query 
     query = query[:-2] +";"
@@ -105,6 +124,27 @@ def insert_road(df):
     bound = min(len(df), i + max_batch)
     partial_df = df[i:bound]
     query = "INSERT INTO road VALUES \n"
+    for _, row in partial_df.iterrows():
+      row_query = "("
+      row_query += str(row['id']) + ", "
+      row_query += adjust_point_insert_query(row['point']) + ", "
+      row_query += adjust_geometry_insert_query(row['line']) + ", "
+      row_query += str(row['length'])
+      row_query += "),\n"
+      query += row_query 
+    query = query[:-2] +";"
+    execute_query(query)
+    print(f"[INSERTED] Insert {i} data")
+    i += max_batch
+    time.sleep(0.1)
+
+def insert_rail(df):
+  i = 0
+  max_batch = 1000
+  while (i <= len(df)):
+    bound = min(len(df), i + max_batch)
+    partial_df = df[i:bound]
+    query = "INSERT INTO rail VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += str(row['id']) + ", "
@@ -162,22 +202,28 @@ if __name__ == "__main__":
     cur.close()
 
     # Create tables if not exists
+    execute_query(CREATE_TABLE_COUNTRY)
     execute_query(CREATE_TABLE_REGION)
     execute_query(CREATE_TABLE_DISTRICT)
     execute_query(CREATE_TABLE_ROAD)
+    execute_query(CREATE_TABLE_RAIL)
     execute_query(CREATE_TABLE_EARTHQUAKE)
     print(f"[SUCCESS] Successfully create tables")
 
     # Import data from csv
+    country_df = pd.read_csv(os.path.join(PREPROCESSED_DATA, 'country.csv'))
     region_df = pd.read_csv(os.path.join(PREPROCESSED_DATA, 'region.csv'))
     district_df = pd.read_csv(os.path.join(PREPROCESSED_DATA, 'district.csv'))
     road_df = pd.read_csv(os.path.join(PREPROCESSED_DATA, 'road.csv'))
+    rail_df = pd.read_csv(os.path.join(PREPROCESSED_DATA, 'rail.csv'))
     earthquake_df = pd.read_csv(os.path.join(PREPROCESSED_DATA, 'earthquake.csv'))
 
     # Insert data
+    insert_country(country_df)
     insert_region(region_df)
     insert_district(district_df)
     insert_road(road_df)
+    insert_rail(rail_df)
     insert_earthquake(earthquake_df)
 
   except Exception as e: 
