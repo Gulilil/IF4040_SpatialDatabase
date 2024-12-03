@@ -57,7 +57,7 @@ def insert_country(df):
   while (i <= len(df)):
     bound = min(len(df), i + max_batch)
     partial_df = df[i:bound]
-    query = "INSERT INTO country VALUES \n"
+    query = "INSERT INTO countries VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += make_string(row['country_code']) + ", "
@@ -78,7 +78,7 @@ def insert_region(df):
   while (i <= len(df)):
     bound = min(len(df), i + max_batch)
     partial_df = df[i:bound]
-    query = "INSERT INTO region VALUES \n"
+    query = "INSERT INTO regions VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += make_string(row['region_code']) + ", "
@@ -100,7 +100,7 @@ def insert_district(df):
   while (i <= len(df)):
     bound = min(len(df), i + max_batch)
     partial_df = df[i:bound]
-    query = "INSERT INTO district VALUES \n"
+    query = "INSERT INTO districts VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += make_string(row['district_code']) + ", "
@@ -123,7 +123,7 @@ def insert_road(df):
   while (i <= len(df)):
     bound = min(len(df), i + max_batch)
     partial_df = df[i:bound]
-    query = "INSERT INTO road VALUES \n"
+    query = "INSERT INTO roads VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += str(row['id']) + ", "
@@ -144,7 +144,7 @@ def insert_rail(df):
   while (i <= len(df)):
     bound = min(len(df), i + max_batch)
     partial_df = df[i:bound]
-    query = "INSERT INTO rail VALUES \n"
+    query = "INSERT INTO rails VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += str(row['id']) + ", "
@@ -165,7 +165,7 @@ def insert_earthquake(df):
   while (i <= len(df)):
     bound = min(len(df), i+ max_batch)
     partial_df = df[i:bound]
-    query = "INSERT INTO earthquake VALUES \n"
+    query = "INSERT INTO earthquakes VALUES \n"
     for _, row in partial_df.iterrows():
       row_query = "("
       row_query += str(row['id']) + ", "
