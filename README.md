@@ -10,7 +10,7 @@ Spatial Database exploration and implementation
 
 
 ## Deskripsi Singkat 
-This program contains the implementation of spatial database using PostgreSQL and Postgis. The dataset used in this project is earthquake dataset in United Kingdom, UK's road and rail road dataset, and UK's administrative units.
+This program contains the implementation of spatial database using PostgreSQL and PostGIS. The dataset used in this project is earthquake dataset in United Kingdom, UK's road and rail road dataset, and UK's administrative units.
 
 ## data Details
 | No. | Relation | Shape | Source | 
